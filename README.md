@@ -1,6 +1,10 @@
-# Pizza CLI
+# Runing the Cli tool
+npm -install
+npm run create
 
-Example TypeScript CLI with Node.js
+#  Wso2ToKong-Cli 
+Navigate to the location where the Swagger 3.0 is present in 'ymal' format
+run the command "pizza" inside the folder
 
 ## Credits
 
