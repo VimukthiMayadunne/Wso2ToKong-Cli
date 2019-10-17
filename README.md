@@ -1,9 +1,9 @@
 # Runing the Cli tool
-npm -install
-npm run create
+npm -install<br>
+npm run create<br>
 
 #  Wso2ToKong-Cli 
-Navigate to the location where the Swagger 3.0 is present in 'ymal' format
+Navigate to the location where the Swagger 3.0 is present in 'ymal' format <br>
 run the command "pizza" inside the folder
 
 ## Credits
