@@ -17,6 +17,7 @@ async function main() {
   await getinput()
 }
 
+//Printing the basic information
 function printData() {
   try {
     clear()
@@ -31,6 +32,8 @@ function printData() {
   }
 }
 
+//taking the input from the swager file
+//need to updathe the function to be able read files in .json and .yml format
 async function getinput() {
   try {
     var questions = [{
