@@ -1,0 +1,68 @@
+swagger: "2.0"
+info:
+  version: "1"
+  title: NePolian
+host: www.mocky.io
+basePath: /v2/5d8d8d46310000cd032b4ee3
+schemes:
+ - http
+security:
+ -
+  default: []
+paths:
+  /*:
+    get:
+      parameters: []
+      responses:
+        200:
+          description: OK
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+    post:
+      parameters: []
+      responses:
+        200:
+          description: OK
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+    put:
+      parameters: []
+      responses:
+        200:
+          description: OK
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+    delete:
+      parameters: []
+      responses:
+        200:
+          description: OK
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+    patch:
+      parameters: []
+      responses:
+        200:
+          description: OK
+      security:
+       -
+        default: []
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+securityDefinitions:
+  default:
+    type: oauth2
+    authorizationUrl: https://test.com
+    flow: implicit
