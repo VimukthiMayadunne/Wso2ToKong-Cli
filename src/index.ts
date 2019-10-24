@@ -6,12 +6,12 @@ const figlet = require('figlet');
 const path = require('path');
 const program = require('commander');
 const inquirer = require('inquirer')
-var swagger: any ,api, url: any ,host: String,ans; 
+var swagger: any ,api, url: any ,host: String,ans ,seviceID:any; 
 var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
-
+const map= require('./models/mapper');
 main()
-
+console.log(map)
 async function main() {
   printData()
   await getinput()
@@ -107,6 +107,7 @@ async function createService(name: any, host: any) {
           console.log("Service Name Alredy Exits")
         }
         else {
+          seviceID= await data.id
           //console.log("Service Created", data)
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
@@ -149,7 +150,7 @@ function createPaths(uri:any, host:any , pathName:any , methordList:any){
    {
     'Content-Type': 'application/json' 
   },
-  body: { paths :[pathName] , methods : methordList},
+  body: { paths :[pathName] , methods : methordList , strip_path:false },
   json: true };
 
 request(options, function (error: any, response: any, body: any) {
@@ -158,4 +159,8 @@ request(options, function (error: any, response: any, body: any) {
   console.log(body);
 });
 
+}
+
+function  addPlugins(uri:any ,servicename:any){
+  
 }
