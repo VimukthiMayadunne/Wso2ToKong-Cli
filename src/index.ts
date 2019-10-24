@@ -73,6 +73,7 @@ async function rel() {
 function getpaths(data: any) {
   for (let route of data) {
     console.log(route.name)
+      
   }
 }
 
@@ -112,6 +113,7 @@ async function createService(name: any, host: any) {
 }
 
 function createRoute(uri: any, host: any) {
+
   var options = {
     method: 'POST',
     url: uri,
@@ -130,5 +132,21 @@ function createRoute(uri: any, host: any) {
     }
   });
 }
+/*
+function createPaths(uri:any, host:any , pathDetails:any ,serviceName:any){
+  var options = {
+    method: 'POST',
+    url: uri,
+    form: { 'paths[]': pathDetails.name, 'methods[]' : undefined: undefined }
+  };
 
-
+  request(options, async function (error: any, response: any, body: any) {
+    if (error)
+      console.log("Unable To Send the Request to create the Service")
+    else {
+      var data = await JSON.parse(body)
+      console.log(data)
+    }
+  });
+}
+*/
