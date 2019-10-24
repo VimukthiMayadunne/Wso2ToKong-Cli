@@ -1,68 +1,157 @@
-swagger: "2.0"
+
 info:
-  version: "1"
-  title: Napolian
-host: www.mocky.io
-basePath: /v2/5d8d8d46310000cd032b4ee3
+  description: Sample wether app creaqted to get to know swagger
+  version: 1.0.0
+  title: Weather App
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: vimukthim@wso2.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: 'localhost:8280'
+basePath: /wether/1.0.0
+tags:
+  - name: weather
+    description: Todayas Weather
+    externalDocs:
+      description: Find out more
+      url: 'https://openweathermap.org/current'
+  - name: forecast
+    description: wether forcast of the cities
+    externalDocs:
+      description: Find out more about our store
+      url: 'https://openweathermap.org/forecast16'
 schemes:
- - http
-security:
- -
-  default: []
+  - https
+  - http
 paths:
-  /*:
+  /weather:
     get:
-      parameters: []
       responses:
-        200:
-          description: OK
-      security:
-       -
-        default: []
+        '200':
+          description: Wether of The Given City ID
+        '401':
+          description: >-
+            Invalid API key. Please see http://openweathermap.org/faq#error401
+            for more info
+        '404':
+          description: Unable to find the URL path
+        '429':
+          description: >-
+            Your account is temporary blocked due to exceeding of requests
+            limitation of your subscription type.
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: id
+          in: query
+          required: false
+          type: number
+          description: ID of the City
+        - name: q
+          in: query
+          required: false
+          type: string
+          description: Name of the city
+        - name: appid
+          in: query
+          required: true
+          type: string
+          description: key
+          default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-    post:
-      parameters: []
+      x-throttling-tier: 10KPerMin
+  /forecast:
+    get:
       responses:
-        200:
-          description: OK
-      security:
-       -
-        default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-    put:
-      parameters: []
-      responses:
-        200:
-          description: OK
-      security:
-       -
-        default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-    delete:
-      parameters: []
-      responses:
-        200:
-          description: OK
-      security:
-       -
-        default: []
-      x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-    patch:
-      parameters: []
-      responses:
-        200:
-          description: OK
-      security:
-       -
-        default: []
+        '200':
+          description: ForeCast of the Given city
+        '401':
+          description: >-
+            Invalid API key. Please see http://openweathermap.org/faq#error401
+            for more info
+        '404':
+          description: Unable to find the URL path
+        '429':
+          description: >-
+            Your account is temporary blocked due to exceeding of requests
+            limitation of your subscription type.
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: id
+          in: query
+          required: false
+          type: number
+          description: ID of the City
+        - name: q
+          in: query
+          required: false
+          type: string
+          description: Name of the city
+        - name: appid
+          in: query
+          required: true
+          type: string
+          description: key
+          default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
       x-throttling-tier: Unlimited
 securityDefinitions:
-  default:
+  OAuth2:
     type: oauth2
-    authorizationUrl: https://test.com
-    flow: implicit
+    flow: application
+    tokenUrl: 'https://172.17.0.2:8243/token'
+swagger: '2.0'    
+x-customAuth:
+  name: OAuth2
+  url: 'http://localhost:3000/token/token'
+  encodingType: Base 64
+  description: >-
+    WSO2 APIM getway Acsess gearator- Genarates Accses token from client
+    credentials to acsess data
+  details:
+    client_credentials:
+      - grantType: client_credentias
+        methord: POST
+        parameters:
+          - name: clientKey
+            in: body
+            required: true
+            type: string
+          - name: ClientSecret
+            in: body
+            required: true
+            type: string
+          - name: GrantType
+            in: body
+            requried: true
+            description: What is the grant type used to genatae accses token
+    password:
+      - grantType: password
+        methord: POST
+        parameters:
+          - name: clientKey
+            in: body
+            required: true
+            type: string
+          - name: ClientSecret
+            in: body
+            required: true
+            type: string
+          - name: GrantType
+            in: body
+            requried: true
+            description: What is the grant type used to genatae accses token
+          - name: userName
+            in: body
+            required: true
+            type: string
+          - name: password
+            in: body
+            required: true

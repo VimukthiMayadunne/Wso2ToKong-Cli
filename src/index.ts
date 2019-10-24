@@ -60,7 +60,6 @@ async function rel() {
         swagger = data
         host = swagger.schemes["0"] + "://" + swagger.host + swagger.basePath
         url = konguri + data.info.title + "/routes"
-        getpaths(data.paths)
         createService(data.info.title, host)
       }
     })
@@ -70,10 +69,19 @@ async function rel() {
   }
 }
 
-function getpaths(data: any) {
-  for (let route of data) {
-    console.log(route.name)
-      
+async function getpaths(data: any) {
+  var result
+  for (var route in data) {
+    var methrdList=[]
+    console.log("route is:",route)
+    //console.log("routeDatais",data[route])
+    for(var methord in data[route]){
+      //console.log("Methods are:",methord)
+      var string = new String(methord)
+      methrdList.push(string.toLocaleUpperCase())
+    }
+  console.log("Methord list",methrdList)
+  result = createPaths(url, swagger.info.title, route, methrdList)
   }
 }
 
@@ -99,7 +107,7 @@ async function createService(name: any, host: any) {
           console.log("Service Name Alredy Exits")
         }
         else {
-          console.log("Service Created", data)
+          //console.log("Service Created", data)
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
           createRoute(url, swagger.info.title)
@@ -128,25 +136,26 @@ function createRoute(uri: any, host: any) {
       console.log("Route Created")
       console.log("Route ID   :", data.id)
       console.log("Route Hosts :", data.hosts["0"])
+      getpaths(swagger.paths)
       //console.log(body);
     }
   });
 }
-/*
-function createPaths(uri:any, host:any , pathDetails:any ,serviceName:any){
-  var options = {
-    method: 'POST',
-    url: uri,
-    form: { 'paths[]': pathDetails.name, 'methods[]' : undefined: undefined }
-  };
 
-  request(options, async function (error: any, response: any, body: any) {
-    if (error)
-      console.log("Unable To Send the Request to create the Service")
-    else {
-      var data = await JSON.parse(body)
-      console.log(data)
-    }
-  });
+function createPaths(uri:any, host:any , pathName:any , methordList:any){
+  var options = { method: 'POST',
+  url: uri,
+  headers: 
+   {
+    'Content-Type': 'application/json' 
+  },
+  body: { paths :[pathName] , methods : methordList},
+  json: true };
+
+request(options, function (error: any, response: any, body: any) {
+  if (error) 
+    throw new Error(error);
+  console.log(body);
+});
+
 }
-*/
