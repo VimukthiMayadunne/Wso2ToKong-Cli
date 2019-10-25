@@ -9,19 +9,18 @@ const inquirer = require('inquirer')
 var swagger: any ,api, url: any ,host: String,ans ,seviceID:any; 
 var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
-const map= require('./models/mapper');
-
-
+import {Quota} from './models/mapper'
 
 var apple='10kperminiute'
 var appl = parseInt(apple)*1000
 
 main()
-console.log(map)
+
 async function main() {
   console.log(appl)
   printData()
   await getinput()
+  //console.log(quota)
 }
 
 //Printing the basic information
@@ -67,7 +66,6 @@ async function rel() {
         console.log("Unable To Read the Swagger File")
       else {
         swagger = await data
-        await addPlugins();
         host = swagger.schemes["0"] + "://" + swagger.host + swagger.basePath
         url = konguri + data.info.title + "/routes"
         createService(data.info.title, host)
@@ -118,6 +116,7 @@ async function createService(name: any, host: any) {
         }
         else {
           seviceID= await data.id
+          await addPlugins()
           //console.log("Service Created", data)
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
@@ -171,12 +170,43 @@ request(options, function (error: any, response: any, body: any) {
 
 }
 
-function  addPlugins(){
+async function  addPlugins(){
   var data = swagger['x-wso2-policies']
   var plugins:any
   for(plugins in data){
-    console.log(plugins , ":" , data[plugins].isenabled)
+    //console.log(plugins , ":" , data[plugins].isenabled)
     if(data[plugins].isenabled)
-      console.log("Deploying the plugin",plugins)
+      //console.log("Deploying the plugin",plugins)
+      if(plugins == 'quota'){
+        createPluginQuota('rate-limiting',url,data[plugins])
+      }
   }
+}
+
+async function createPluginQuota(policy:any,uri:any,data:any){
+console.log("Fun called" , data)
+var rateLimit=parseInt(data.apiLevelPolicy)*1000
+console.log("Rate Limit:",rateLimit)
+var options = { method: 'POST',
+  url: `http://localhost:8001/services/${seviceID}/plugins`,
+  headers: 
+   { 'Postman-Token': '718d6abe-a60e-407f-83cf-b24b62fe04c8',
+     'cache-control': 'no-cache',
+     'Content-Type': 'application/json' },
+  body: 
+   {name: 'rate-limiting',
+    "service":{"id":seviceID},
+    'config.minute': 100},
+  json: true };
+
+request(options, function (error: string | undefined, response: any, body: any) {
+  if (error) 
+    throw new Error(error);
+  console.log(body);
+});
+
+}
+
+function createPluginOauth(policyy:any,uri:any , data:any){
+
 }

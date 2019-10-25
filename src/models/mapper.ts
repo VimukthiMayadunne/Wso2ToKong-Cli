@@ -1,10 +1,5 @@
-const data={
-        quota:{
-            ratelimiting:{
-                name:'rate-limiting',
-                rate:'config.minnute',
-                applyTo:'service.id'
-            }
-    }
+export  interface Quota{
+    name: String,
+    'service.id':String,  
+    'config.minute': Number    
 }
-module.exports=data
