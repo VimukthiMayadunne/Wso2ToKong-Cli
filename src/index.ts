@@ -196,7 +196,7 @@ var options = { method: 'POST',
   body: 
    {name: 'rate-limiting',
     "service":{"id":seviceID},
-    'config.minute': 100},
+    'config.minute': rateLimit},
   json: true };
 
 request(options, function (error: string | undefined, response: any, body: any) {
