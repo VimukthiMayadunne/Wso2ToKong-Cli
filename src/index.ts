@@ -10,9 +10,16 @@ var swagger: any ,api, url: any ,host: String,ans ,seviceID:any;
 var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
 const map= require('./models/mapper');
+
+
+
+var apple='10kperminiute'
+var appl = parseInt(apple)*1000
+
 main()
 console.log(map)
 async function main() {
+  console.log(appl)
   printData()
   await getinput()
 }
@@ -45,9 +52,11 @@ async function getinput() {
     ans = await inquirer.prompt(questions)
     konguri = await ans.name
     await rel()
+    
   }
   catch (Error) {
     console.log("Error While Taking the input")
+    console.log(Error)
   }
 }
 
@@ -57,7 +66,8 @@ async function rel() {
       if (err)
         console.log("Unable To Read the Swagger File")
       else {
-        swagger = data
+        swagger = await data
+        await addPlugins();
         host = swagger.schemes["0"] + "://" + swagger.host + swagger.basePath
         url = konguri + data.info.title + "/routes"
         createService(data.info.title, host)
@@ -161,6 +171,12 @@ request(options, function (error: any, response: any, body: any) {
 
 }
 
-function  addPlugins(uri:any ,servicename:any){
-  
+function  addPlugins(){
+  var data = swagger['x-wso2-policies']
+  var plugins:any
+  for(plugins in data){
+    console.log(plugins , ":" , data[plugins].isenabled)
+    if(data[plugins].isenabled)
+      console.log("Deploying the plugin",plugins)
+  }
 }
