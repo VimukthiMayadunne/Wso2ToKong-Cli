@@ -46,12 +46,15 @@ x-wso2-contextDetails:
   
 x-wso2-policies:
   cashe:
+    isenabled: false
     responseCache: Disabled
     cacheTimeout: 300
   #Quota Policy on the API
   quota: 
+    isenabled: true
     apiLevelPolicy: 10KPerMin
   corsConfiguration:
+    isenabled: false
     corsConfigurationEnabled: false
     accessControlAllowOrigins:
     - '*'
@@ -68,12 +71,15 @@ x-wso2-policies:
     - DELETE
     - PATCH
     - OPTIONS
-  enableSchemaValidation: false
+  enableSchemaValidation:
+    isenabled: false false
   mediationPolicies:
+    isenabled: false
     inSequence: #policies for in-Sequence goes here
     outSequence: #policies for out-Sequence goes here
     fault-Sequence: #policies for fault-Sequence goes here 
-  subcriptionPolicies: #Wso2 subscription tiers and other details 
+  subcriptionPolicies:
+    isenabled: false #Wso2 subscription tiers and other details 
     availableTiers:
     -
       name: Bronze
@@ -86,7 +92,10 @@ x-wso2-policies:
       tierPlan: FREE
       stopOnQuotaReached: true
     availableSubscriptionLevelPolicies: []
-    subscriptionAvailability: all_tenants  
+    subscriptionAvailability: all_tenants
+  apiSecurity:
+    isenabled: true
+    name: oauth2
   
 tags:
 - name: "pet"
@@ -657,12 +666,7 @@ securityDefinitions:
     name: "api_key"
     in: "header"
 #security added by the WSO2 APIManager
-x-wos2-security:
-  authorizationHeader: Authorization
-  apiSecurity: 
-    - oauth2
-    - oauth_basic_auth_api_key_mandatory
-  accessControl: all
+
   
 definitions:
   Order:

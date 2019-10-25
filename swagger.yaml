@@ -1,16 +1,16 @@
-
+swagger: '2.0'
 info:
   description: Sample wether app creaqted to get to know swagger
   version: 1.0.0
-  title: Weather App
+  title: WeatherApp
   termsOfService: 'http://swagger.io/terms/'
   contact:
     email: vimukthim@wso2.com
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-host: 'localhost:8280'
-basePath: /wether/1.0.0
+host: api.openweathermap.org
+basePath: /data/2.5
 tags:
   - name: weather
     description: Todayas Weather
@@ -42,10 +42,6 @@ paths:
             Your account is temporary blocked due to exceeding of requests
             limitation of your subscription type.
       parameters:
-        - name: Authorization
-          in: header
-          type: string
-          required: true
         - name: id
           in: query
           required: false
@@ -60,15 +56,15 @@ paths:
           in: query
           required: true
           type: string
-          description: key
+          description: key - c0430ab5b358094192e01693bb0adef5
           default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
-      x-throttling-tier: 10KPerMin
+      x-throttling-tier: 50KPerMin
   /forecast:
     get:
       responses:
         '200':
-          description: ForeCast of the Given city
+          description: Fore Cast of the Given city
         '401':
           description: >-
             Invalid API key. Please see http://openweathermap.org/faq#error401
@@ -80,10 +76,6 @@ paths:
             Your account is temporary blocked due to exceeding of requests
             limitation of your subscription type.
       parameters:
-        - name: Authorization
-          in: header
-          type: string
-          required: true
         - name: id
           in: query
           required: false
@@ -98,60 +90,60 @@ paths:
           in: query
           required: true
           type: string
-          description: key
+          description: key - c0430ab5b358094192e01693bb0adef5
           default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
-      x-throttling-tier: Unlimited
-securityDefinitions:
-  OAuth2:
-    type: oauth2
-    flow: application
-    tokenUrl: 'https://172.17.0.2:8243/token'
-swagger: '2.0'    
-x-customAuth:
-  name: OAuth2
-  url: 'http://localhost:3000/token/token'
-  encodingType: Base 64
-  description: >-
-    WSO2 APIM getway Acsess gearator- Genarates Accses token from client
-    credentials to acsess data
-  details:
-    client_credentials:
-      - grantType: client_credentias
-        methord: POST
-        parameters:
-          - name: clientKey
-            in: body
-            required: true
-            type: string
-          - name: ClientSecret
-            in: body
-            required: true
-            type: string
-          - name: GrantType
-            in: body
-            requried: true
-            description: What is the grant type used to genatae accses token
-    password:
-      - grantType: password
-        methord: POST
-        parameters:
-          - name: clientKey
-            in: body
-            required: true
-            type: string
-          - name: ClientSecret
-            in: body
-            required: true
-            type: string
-          - name: GrantType
-            in: body
-            requried: true
-            description: What is the grant type used to genatae accses token
-          - name: userName
-            in: body
-            required: true
-            type: string
-          - name: password
-            in: body
-            required: true
+      x-throttling-tier: 50KPerMin
+x-wso2-policies:
+  cashe:
+    isenabled: false
+    responseCache: Disabled
+    cacheTimeout: 300
+  #Quota Policy on the API
+  quota: 
+    isenabled: true
+    apiLevelPolicy: 10KPerMin
+  corsConfiguration:
+    isenabled: false
+    corsConfigurationEnabled: false
+    accessControlAllowOrigins:
+    - '*'
+    accessControlAllowCredentials: false
+    accessControlAllowHeaders:
+    - authorization
+    - Access-Control-Allow-Origin
+    - Content-Type
+    - SOAPAction
+    accessControlAllowMethods:
+    - GET
+    - PUT
+    - POST
+    - DELETE
+    - PATCH
+    - OPTIONS
+  enableSchemaValidation:
+    isenabled: false false
+  mediationPolicies:
+    isenabled: false
+    inSequence: #policies for in-Sequence goes here
+    outSequence: #policies for out-Sequence goes here
+    fault-Sequence: #policies for fault-Sequence goes here 
+  subcriptionPolicies:
+    isenabled: false #Wso2 subscription tiers and other details 
+    availableTiers:
+    -
+      name: Bronze
+      displayName: Bronze
+      description: Allows 1000 requests per minute
+      requestsPerMin: 1000
+      requestCount: 1000
+      unitTime: 1
+      timeUnit: min
+      tierPlan: FREE
+      stopOnQuotaReached: true
+    availableSubscriptionLevelPolicies: []
+    subscriptionAvailability: all_tenants
+  apiSecurity:
+    isenabled: true
+    name: oauth2
+  
