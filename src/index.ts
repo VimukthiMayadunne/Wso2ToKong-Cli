@@ -9,10 +9,14 @@ const inquirer = require('inquirer')
 var swagger: any ,api, url: any ,host: String,ans ,seviceID:any; 
 var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
-import {Quota} from './models/mapper'
+//const mongoose = require('mongoose');
+const Quotas = require('./models/mapper')
 
 var apple='10kperminiute'
 var appl = parseInt(apple)*1000
+
+
+var quotas = new Quotas({"service":{"id":"asdsadasdsadasds"},config:{"minute":20}})
 
 main()
 
@@ -20,6 +24,7 @@ async function main() {
   console.log(appl)
   printData()
   await getinput()
+  console.log("Qoutdsadsadsad:",quotas)
   //console.log(quota)
 }
 
@@ -194,9 +199,11 @@ var options = { method: 'POST',
      'cache-control': 'no-cache',
      'Content-Type': 'application/json' },
   body: 
-   {name: 'rate-limiting',
+  {
+    "name":"rate-limiting",
     "service":{"id":seviceID},
-    'config.minute': rateLimit},
+    "config":{"second":rateLimit}
+  },
   json: true };
 
 request(options, function (error: string | undefined, response: any, body: any) {
