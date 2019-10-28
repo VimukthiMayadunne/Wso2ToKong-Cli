@@ -13,11 +13,12 @@ let QuotaSchema = new Schema({
     },
     "config":
         {"minute":{
-            type:String
+               type:Number
     }
     },
     _id : false 
 });
-
 const Quota =mongoose.model('quota',QuotaSchema);
+
+
 module.exports = Quota;

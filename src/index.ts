@@ -11,12 +11,12 @@ var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
 //const mongoose = require('mongoose');
 const Quotas = require('./models/mapper')
-
+const Oauth2 = require('./models/oauth')
 var apple='10kperminiute'
 var appl = parseInt(apple)*1000
 
 
-var quotas = new Quotas({"service":{"id":"asdsadasdsadasds"},config:{"minute":20}})
+
 
 main()
 
@@ -24,7 +24,7 @@ async function main() {
   console.log(appl)
   printData()
   await getinput()
-  console.log("Qoutdsadsadsad:",quotas)
+  //console.log("Qoutdsadsadsad:",quotas)
   //console.log(quota)
 }
 
@@ -185,35 +185,41 @@ async function  addPlugins(){
       if(plugins == 'quota'){
         createPluginQuota('rate-limiting',url,data[plugins])
       }
+      if(plugins == 'apiSecurity')
+          createPluginOauth(data[plugins])
   }
 }
 
 async function createPluginQuota(policy:any,uri:any,data:any){
-console.log("Fun called" , data)
+
 var rateLimit=parseInt(data.apiLevelPolicy)*1000
-console.log("Rate Limit:",rateLimit)
-var options = { method: 'POST',
-  url: `http://localhost:8001/services/${seviceID}/plugins`,
-  headers: 
-   { 'Postman-Token': '718d6abe-a60e-407f-83cf-b24b62fe04c8',
-     'cache-control': 'no-cache',
-     'Content-Type': 'application/json' },
-  body: 
-  {
-    "name":"rate-limiting",
-    "service":{"id":seviceID},
-    "config":{"second":rateLimit}
-  },
-  json: true };
-
-request(options, function (error: string | undefined, response: any, body: any) {
-  if (error) 
-    throw new Error(error);
-  console.log(body);
-});
-
+var quotas = await new Quotas({"service":{"id":seviceID},config:{"minute":rateLimit}})
+var target = await `http://localhost:8001/services/${seviceID}/plugins`
+await newPlugin(target,quotas)
 }
 
-function createPluginOauth(policyy:any,uri:any , data:any){
+async function createPluginOauth(data:any){
+var body = await new Oauth2({service:{id:seviceID}})
+console.log("Details are",body)
+var target =await `http://localhost:8001/services/${seviceID}/plugins`
+await newPlugin(target,body)
+}
 
+
+async function newPlugin(uri:any , data:any){
+  var options = { method: 'POST',
+  url: uri,
+  headers: 
+   {
+     Host: 'localhost:8001',
+     Accept: '*/*',
+     'Content-Type': 'application/json' },
+  body : data , json:true
+   }
+   console.log(data)
+request(options, function (error: string | undefined, response: any, body: any) {
+  if (error)
+   throw new Error(error);
+  console.log(body);
+});
 }
