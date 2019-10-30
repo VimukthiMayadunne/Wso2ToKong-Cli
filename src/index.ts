@@ -61,6 +61,7 @@ async function getinput() {
   }
 }
 
+//Reding the yaml file and tehn creating the service in Kong
 async function rel() {
   try {
     readYaml('swagger.yaml', async function (err: any, data: any) {
@@ -79,8 +80,9 @@ async function rel() {
   }
 }
 
+
+// loop thrugh swageer file and identifin ng routes and mothords associate to the route
 async function getpaths(data: any) {
-  var result
   for (var route in data) {
     var methrdList = []
     //console.log("route is:", route)
@@ -89,7 +91,7 @@ async function getpaths(data: any) {
       methrdList.push(string.toLocaleUpperCase())
     }
     //console.log("Methord list", methrdList)
-    result = await createPaths(url, swagger.info.title, route, methrdList)
+    createPaths(url, swagger.info.title, route, methrdList)
   }
 }
 
@@ -116,11 +118,13 @@ async function createService(name: any, host: any) {
         }
         else {
           seviceID = await data.id
-          await addPlugins()
-          //console.log("Service Created", data)
+          //await addPlugins()
+
+          console.log("Service Created")
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
           createRoute(url, swagger.info.title)
+          createPluginOauth(seviceID)
         }
       }
     });
@@ -144,9 +148,9 @@ function createRoute(uri: any, host: any) {
       console.log("Unable To Send the Request to create the Service")
     else {
       var data = await JSON.parse(body)
-      console.log("Route Created")
-      console.log("Route ID   :", data.id)
-      console.log("Route Hosts :", data.hosts["0"])
+      console.log("Host Created")
+      console.log("Host ID   :", data.id)
+      console.log("Host Name :", data.hosts["0"])
       getpaths(swagger.paths)
       //console.log(body);
     }
@@ -173,15 +177,12 @@ function createPaths(uri: any, host: any, pathName: any, methordList: any) {
     console.log("Route Created")
     console.log("Route   ID :", routeID)
     console.log("Service ID :",body.service.id)
-    console.log("..............................")
-    console.log("Tire is:",swagger.paths[pathName])
-    console.log("Tire is:",)
     await ceratePluginQuotaAtRouteLevel(swagger.paths[pathName][meth.toLocaleLowerCase()]["x-throttling-tier"],routeID)
   });
 
 }
 
-async function addPlugins() {
+/*async function addPlugins() {
   var data = swagger['x-wso2-policies']
   var plugins: any
   for (plugins in data) {
@@ -202,12 +203,12 @@ async function createPluginQuotaAtApiLevel(policy: any, uri: any, data: any) {
   var target = await `http://localhost:8001/services/${seviceID}/plugins`
   await newPlugin(target, quotas)
 }
-
-async function createPluginOauth(data: any) {
+*/
+async function createPluginOauth( serviceID: any) {
   if (swagger.securityDefinitions.Oauth2.type == 'oauth2') {
     var body = await new Oauth2({ service: { id: seviceID } })
     //console.log("Details are",body)
-    var target = await `http://localhost:8001/services/${seviceID}/plugins`
+    var target = `http://localhost:8001/services/${seviceID}/plugins`
     await newPlugin(target, body)
   }
 }
@@ -225,7 +226,7 @@ async function newPlugin(uri: any, data: any) {
     },
     body: data, json: true
   }
-  console.log(data)
+  //console.log(data)
   request(options, async function (error: string | undefined, response: any, body: any) {
     if (error)
       throw new Error(error);
@@ -238,7 +239,7 @@ async function newPlugin(uri: any, data: any) {
 
 async function ceratePluginQuotaAtRouteLevel(data:any , routeID:any){
   var rateLimit = parseInt(data) * 1000
-  var quotas = await new Quotas({ "service": { "id": routeID }, config: { "minute": rateLimit } })
+  var quotas = await new Quotas({ "route": { "id": routeID }, config: { "minute": rateLimit } })
   var target = `http://localhost:8001/routes/${routeID}/plugins`
   await newPlugin(target, quotas)
 }
