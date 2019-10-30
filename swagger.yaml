@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: Sample wether app creaqted to get to know swagger
   version: 1.0.0
-  title: WeatherWithPlugins
+  title: WeatherPlugins
   termsOfService: 'http://swagger.io/terms/'
   contact:
     email: vimukthim@wso2.com
@@ -25,6 +25,17 @@ tags:
 schemes:
   - https
   - http
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  newOAuth:
+    type: oauth2
+    flow: password
+    tokenUrl : 'https://petstore.swagger.io/oauth/token'   
+
 paths:
   /weather:
     get:
@@ -94,56 +105,3 @@ paths:
           default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
       x-throttling-tier: 50KPerMin
-x-wso2-policies:
-  cashe:
-    isenabled: false
-    responseCache: Disabled
-    cacheTimeout: 300
-  #Quota Policy on the API
-  quota: 
-    isenabled: true
-    apiLevelPolicy: 10KPerMin
-  corsConfiguration:
-    isenabled: false
-    corsConfigurationEnabled: false
-    accessControlAllowOrigins:
-    - '*'
-    accessControlAllowCredentials: false
-    accessControlAllowHeaders:
-    - authorization
-    - Access-Control-Allow-Origin
-    - Content-Type
-    - SOAPAction
-    accessControlAllowMethods:
-    - GET
-    - PUT
-    - POST
-    - DELETE
-    - PATCH
-    - OPTIONS
-  enableSchemaValidation:
-    isenabled: false 
-  mediationPolicies:
-    isenabled: false
-    inSequence: #policies for in-Sequence goes here
-    outSequence: #policies for out-Sequence goes here
-    fault-Sequence: #policies for fault-Sequence goes here 
-  subcriptionPolicies:
-    isenabled: false #Wso2 subscription tiers and other details 
-    availableTiers:
-    -
-      name: Bronze
-      displayName: Bronze
-      description: Allows 1000 requests per minute
-      requestsPerMin: 1000
-      requestCount: 1000
-      unitTime: 1
-      timeUnit: min
-      tierPlan: FREE
-      stopOnQuotaReached: true
-    availableSubscriptionLevelPolicies: []
-    subscriptionAvailability: all_tenants
-  apiSecurity:
-    isenabled: true
-    name: oauth2
-  

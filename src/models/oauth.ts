@@ -1,3 +1,5 @@
+
+export {};
 const mongoose = require('mongoose');
 const Schema =mongoose.Schema;
 
@@ -26,10 +28,23 @@ let OauthSchema = new Schema({
     },
     "enable_password_grant":{
         type:Boolean,
-        default:true
+        default: false,
+    },
+    "enable_authorization_code":{
+        type:Boolean,
+        default: false,
+    },
+    "enable_client_credentials":{
+        type:Boolean,
+        default: false,
+    },
+    "enable_implicit_grant":{
+        type:Boolean,
+        default: false,
     }
     },
     _id : false 
+
 });
 
 const Oauth =mongoose.model('oauth',OauthSchema);

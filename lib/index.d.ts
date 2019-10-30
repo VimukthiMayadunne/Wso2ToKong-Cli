@@ -1,23 +1,2 @@
 #!/usr/bin/env node
-declare const request: any;
-declare const chalk: any;
-declare const clear: any;
-declare const figlet: any;
-declare const path: any;
-declare const program: any;
-declare const inquirer: any;
-declare var swagger: any, api: any, url: any, host: String, ans: any, seviceID: any;
-declare var konguri: string;
-declare var readYaml: any;
-declare const map: any;
-declare var apple: string;
-declare var appl: number;
-declare function main(): Promise<void>;
-declare function printData(): void;
-declare function getinput(): Promise<void>;
-declare function rel(): Promise<void>;
-declare function getpaths(data: any): Promise<void>;
-declare function createService(name: any, host: any): Promise<void>;
-declare function createRoute(uri: any, host: any): void;
-declare function createPaths(uri: any, host: any, pathName: any, methordList: any): void;
-declare function addPlugins(): void;
+export {};

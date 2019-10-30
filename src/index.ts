@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+export {};
 const request = require('request');
 const chalk = require('chalk');
 const clear = require('clear');
@@ -113,18 +114,20 @@ async function createService(name: any, host: any) {
         console.log("Unable To Send the Request to create the Service")
       else {
         var data = await JSON.parse(body)
+        
         if (data.id == null) {
           console.log("Service Name Alredy Exits")
         }
         else {
           seviceID = await data.id
+          await addSecurity(swagger.securityDefinitions, seviceID)
           //await addPlugins()
-
           console.log("Service Created")
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
           createRoute(url, swagger.info.title)
-          createPluginOauth(seviceID)
+          //createPluginOauth(seviceID)
+
         }
       }
     });
@@ -173,11 +176,11 @@ function createPaths(uri: any, host: any, pathName: any, methordList: any) {
     if (error)
       throw new Error(error);
     var routeID = await body.id
-    var meth:String = methordList[0]
+    var meth: String = methordList[0]
     console.log("Route Created")
     console.log("Route   ID :", routeID)
-    console.log("Service ID :",body.service.id)
-    await ceratePluginQuotaAtRouteLevel(swagger.paths[pathName][meth.toLocaleLowerCase()]["x-throttling-tier"],routeID)
+    console.log("Service ID :", body.service.id)
+    await ceratePluginQuotaAtRouteLevel(swagger.paths[pathName][meth.toLocaleLowerCase()]["x-throttling-tier"], routeID)
   });
 
 }
@@ -204,15 +207,23 @@ async function createPluginQuotaAtApiLevel(policy: any, uri: any, data: any) {
   await newPlugin(target, quotas)
 }
 */
-async function createPluginOauth( serviceID: any) {
-  if (swagger.securityDefinitions.Oauth2.type == 'oauth2') {
-    var body = await new Oauth2({ service: { id: seviceID } })
-    //console.log("Details are",body)
-    var target = `http://localhost:8001/services/${seviceID}/plugins`
-    await newPlugin(target, body)
-  }
-}
 
+async function createPluginOauth(serviceID: any, flow: any) {
+  console.log(flow)
+    if (flow == "implicit")
+      var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_implicit_grant": true } })
+    else if (flow == 'password')
+      var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_password_grant": true } })
+    else if (flow == 'application')
+      var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_client_credentials": true } })
+    else
+      var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_authorization_code": true } })
+    //console.log("Details are",body)
+    var target = `http://localhost:8001/services/${serviceID}/plugins`
+    await newPlugin(target, body)
+  
+}
+//need to update the above function to add fifferent flows 
 
 async function newPlugin(uri: any, data: any) {
   var options = {
@@ -230,16 +241,23 @@ async function newPlugin(uri: any, data: any) {
   request(options, async function (error: string | undefined, response: any, body: any) {
     if (error)
       throw new Error(error);
-    var routeID= await body.id
+    var routeID = await body.id
     console.log("Pulgin Created");
-    console.log("Plugin Name",body.name);
+    console.log("Plugin Name", body.name);
 
   });
 }
 
-async function ceratePluginQuotaAtRouteLevel(data:any , routeID:any){
+async function ceratePluginQuotaAtRouteLevel(data: any, routeID: any) {
   var rateLimit = parseInt(data) * 1000
   var quotas = await new Quotas({ "route": { "id": routeID }, config: { "minute": rateLimit } })
   var target = `http://localhost:8001/routes/${routeID}/plugins`
   await newPlugin(target, quotas)
+}
+
+async function addSecurity(data: any, serviceID: any) {
+  for (var security in data) {
+    if (data[security].type == "oauth2")
+      createPluginOauth(serviceID, data[security].flow)
+  }
 }
