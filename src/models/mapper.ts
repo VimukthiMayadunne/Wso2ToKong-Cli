@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Schema =mongoose.Schema;
 
-let QuotaSchema = new Schema({
+let QuotaRouteSchema = new Schema({
     "name":{
         type:String,
         default:"rate-limiting"
     },
-    "service":
+    "route":
         {"id":{
             type:String,
         }
@@ -18,7 +18,7 @@ let QuotaSchema = new Schema({
     },
     _id : false 
 });
-const Quota =mongoose.model('quota',QuotaSchema);
+const QuotaRoute =mongoose.model('quotaRoute',QuotaRouteSchema);
 
 
-module.exports = Quota;
+module.exports = QuotaRoute;

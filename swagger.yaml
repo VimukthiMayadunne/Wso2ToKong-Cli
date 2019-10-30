@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: Sample wether app creaqted to get to know swagger
   version: 1.0.0
-  title: WeatherAppasdas
+  title: WeatherWithPlugins
   termsOfService: 'http://swagger.io/terms/'
   contact:
     email: vimukthim@wso2.com
@@ -122,7 +122,7 @@ x-wso2-policies:
     - PATCH
     - OPTIONS
   enableSchemaValidation:
-    isenabled: false false
+    isenabled: false 
   mediationPolicies:
     isenabled: false
     inSequence: #policies for in-Sequence goes here
