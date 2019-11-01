@@ -15,9 +15,9 @@ const Quotas = require('./models/mapper')
 const Oauth2 = require('./models/oauth')
 //const QuotaR = require('./models/rateRoute')
 const ApiKey = require('./models/apiKey')
-
+var readFile =require('./apiYamal')
 main()
-
+// Only in new Branch
 async function main() {
   //console.log(appl)
   printData()
@@ -30,14 +30,17 @@ async function main() {
 function printData() {
   try {
     clear()
+    console.log("APIkeyis:",readFile)
     console.log(
       chalk.red(
         figlet.textSync('Wso2', { horizontalLayout: 'full' })
       )
     )
+    readFile()
+    
   }
   catch (e) {
-    console.log("Something went wrong");
+    console.log("Something went wrong",e);
   }
 }
 

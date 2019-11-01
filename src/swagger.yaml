@@ -32,7 +32,7 @@ info:
 securityDefinitions:
   api_key:
     type: apiKey
-    name: api_key
+    name: appid
     in: header
   petstore_auth:
     type: oauth2
