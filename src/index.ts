@@ -11,32 +11,29 @@ var swagger: any, api, url: any, host: String, ans, seviceID: any;
 var konguri = "http://localhost:8001/services/"
 var readYaml = require('read-yaml');
 //const mongoose = require('mongoose');
-const Quotas = require('./models/mapper')
+
 const Oauth2 = require('./models/oauth')
-//const QuotaR = require('./models/rateRoute')
+const QuotaR = require('./models/rateRoute')
 const ApiKey = require('./models/apiKey')
-var readFile =require('./apiYamal')
+const readFile =require('./apiYaml')
 main()
-// Only in new Branch
+
 async function main() {
-  //console.log(appl)
   printData()
   await getinput()
-  //console.log("Qoutdsadsadsad:",quotas)
-  //console.log(quota)
 }
 
 //Printing the basic information
 function printData() {
   try {
     clear()
-    console.log("APIkeyis:",readFile)
+   // console.log("APIkeyis:",readFile)
     console.log(
       chalk.red(
         figlet.textSync('Wso2', { horizontalLayout: 'full' })
       )
     )
-    readFile()
+    //readFile.addPlugins()
     
   }
   catch (e) {
@@ -250,9 +247,9 @@ async function newPlugin(uri: any, data: any) {
 
 async function ceratePluginQuotaAtRouteLevel(data: any, routeID: any) {
   var rateLimit = parseInt(data) * 1000
-  var quotas = await new Quotas({ "route": { "id": routeID }, config: { "minute": rateLimit } })
+  var quotaR = await new QuotaR({ "route": { "id": routeID }, config: { "minute": rateLimit } })
   var target = `http://localhost:8001/routes/${routeID}/plugins`
-  await newPlugin(target, quotas)
+  await newPlugin(target, quotaR)
 }
 
 async function addSecurity(data: any, serviceID: any) {
@@ -285,7 +282,7 @@ async function createPluginApiKey(serviceID: any, name: any) {
   await newPlugin(target, body)
 }
 
-
+module.exports=newPlugin
 
 /*async function addPlugins() {
   var data = swagger['x-wso2-policies']
@@ -302,10 +299,4 @@ async function createPluginApiKey(serviceID: any, name: any) {
   }
 }
 
-async function createPluginQuotaAtApiLevel(policy: any, uri: any, data: any) {
-  var rateLimit = parseInt(data.apiLevelPolicy) * 1000
-  var quotas = await new Quotas({ "service": { "id": seviceID }, config: { "minute": rateLimit } })
-  var target = await `http://localhost:8001/services/${seviceID}/plugins`
-  await newPlugin(target, quotas)
-}
 */
