@@ -35,7 +35,7 @@ advertiseOnly: false
 apiOwner: admin
 subscriptionAvailability: all_tenants
 corsConfiguration:
-  corsConfigurationEnabled: false
+  corsConfigurationEnabled: true
   accessControlAllowOrigins:
    - '*'
   accessControlAllowCredentials: false
@@ -52,7 +52,7 @@ corsConfiguration:
    - PATCH
    - OPTIONS
 endpointConfig: '{"endpoint_type":"http","sandbox_endpoints":{"url":"https://api.openweathermap.org/data/2.5"},"production_endpoints":{"url":"https://api.openweathermap.org/data/2.5"}}'
-responseCache: Disabled
+responseCache: Enabled
 cacheTimeout: 300
 implementation: ENDPOINT
 authorizationHeader: Authorization
