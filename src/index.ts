@@ -27,7 +27,7 @@ async function main() {
 function printData() {
   try {
     clear()
-   // console.log("APIkeyis:",readFile)
+   //console.log("APIkeyis:",readFile.readApiYaml())
     console.log(
       chalk.red(
         figlet.textSync('Wso2', { horizontalLayout: 'full' })
@@ -124,7 +124,11 @@ async function createService(name: any, host: any, tags: any) {
       else {
         var data = await body
         if (data.id == null) {
+          var apiYaml = await readFile.readApiYaml()
+          //console.log("is",apiYaml)
+          await readFile.addPlugins(apiYaml,'9ce0e7d7-1bbd-4f48-b3fd-cc84d0a2b38a')
           console.log("Service Name Alredy Exits")
+         
         }
         else {
           seviceID = await data.id
@@ -133,7 +137,7 @@ async function createService(name: any, host: any, tags: any) {
           console.log("Service Created")
           console.log("Service ID   :", data.id)
           console.log("Service Name :", data.name)
-          createRoute(url, swagger.info.title)
+          createRoute(url, swagger.info.title)     
           //createPluginOauth(seviceID)
         }
       }
@@ -282,7 +286,6 @@ async function createPluginApiKey(serviceID: any, name: any) {
   await newPlugin(target, body)
 }
 
-module.exports=newPlugin
 
 /*async function addPlugins() {
   var data = swagger['x-wso2-policies']

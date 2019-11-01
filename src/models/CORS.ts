@@ -2,7 +2,7 @@ export {};
 const mongoose = require('mongoose');
 const Schema =mongoose.Schema;
 
-let QuotaServiceSchema = new Schema({
+let corsSchema = new Schema({
     "name":{
         type:String,
         default:"cors"
@@ -14,8 +14,8 @@ let QuotaServiceSchema = new Schema({
     },
     "config":{
         "origins":{
-               type:String,
-               default:'*'
+               type:Array,
+               default:['*']
         },
         "methods":{
                 type:Array,
@@ -24,12 +24,16 @@ let QuotaServiceSchema = new Schema({
         "headers":{
             type:Array,
             default:['authorization' ,'Access-Control-Allow-Origin' ,'Content-Type','SOAPAction']
+        },
+        "credentials":{
+            type:Boolean,
+            default: false
         }
 
     },
     _id : false 
 });
-const QuotaService =mongoose.model('quotaservice',QuotaServiceSchema);
+const corsService =mongoose.model('cors',corsSchema);
 
 
-module.exports = QuotaService;
+module.exports = corsService;
