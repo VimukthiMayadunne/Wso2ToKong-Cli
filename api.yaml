@@ -21,7 +21,7 @@ availableTiers:
   tierPlan: FREE
   stopOnQuotaReached: true
 availableSubscriptionLevelPolicies: []
-apiLevelPolicy: Unlimited
+apiLevelPolicy: 50KPerMin
 uriTemplates: []
 apiHeaderChanged: false
 apiResourcePatternsChanged: false

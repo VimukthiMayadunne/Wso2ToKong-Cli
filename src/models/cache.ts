@@ -16,6 +16,10 @@ let CacheSchema = new Schema({
     "cache_ttl":{
         type:Number,
         default:300
+    },
+    "strategy":{
+        type:String,
+        default:"memory"
     }
     },
     _id : false 
