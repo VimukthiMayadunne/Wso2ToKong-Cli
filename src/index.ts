@@ -7,7 +7,7 @@ const figlet = require("figlet");
 const path = require("path");
 const program = require("commander");
 const inquirer = require("inquirer");
-let swagger: any, apiYaml:any , url: any, host: String, ans, seviceID: any;
+var swagger: any, apiYaml: any, url: any, host: String, ans, seviceID: any;
 let konguri = "http://localhost:8001/services/";
 const readYaml = require("read-yaml");
 // const mongoose = require('mongoose');
@@ -40,7 +40,7 @@ function printData() {
 // need to updathe the function to be able read files in .json and .yml format
 async function getinput() {
   try {
-    const questions = [
+    var questions = [
       {
         type: "input",
         name: "name",
@@ -72,9 +72,12 @@ async function rel() {
             swagger.host +
             swagger.basePath +
             "/";
-          url = konguri + data.info.title + "/routes";
-          const tags = data.tags != null ? await addtags(data.tags) : [];
-          createService(data.info.title, host, tags);
+          var name = data.info.title;
+          name = name.replace(/\W/g, "");
+          url = konguri + name + "/routes";
+          var tags = data.tags != null ? await addtags(data.tags) : [];
+
+          createService(name, host, tags);
         } catch (error) {
           console.log(
             "Please make sure the Swagger filr contains the following fileds"
@@ -89,8 +92,8 @@ async function rel() {
 }
 async function addtags(data: any) {
   try {
-    const tags = [];
-    for (const tag in data) {
+    var tags = [];
+    for (var tag in data) {
       tags.push(data[tag].name);
     }
     return tags;
@@ -101,7 +104,7 @@ async function addtags(data: any) {
 }
 
 async function createService(name: any, host: any, tags: any) {
-  const options = {
+  var options = {
     method: "POST",
     url: konguri,
     headers: {
@@ -120,20 +123,22 @@ async function createService(name: any, host: any, tags: any) {
       if (error) {
         console.log("Unable To Send the Request to create the Service");
       } else {
-        const data = await body;
+        var data = await body;
         if (data.id == null) {
           console.log("Service Name Alredy Exits");
+          console.log("data is :", data);
         } else {
           seviceID = await data.id;
           apiYaml = await readFile.readApiYaml();
-          await readFile.addPlugins(apiYaml,seviceID);
+          await readFile.addPlugins(apiYaml, seviceID);
           console.log("Service Created");
           console.log("Service ID   :", data.id);
           console.log("Service Name :", data.name);
-          await createRoute(url, swagger.info.title);
+          await createRoute(url, name);
           await addSecurity(swagger.securityDefinitions, seviceID);
         }
       }
+      console.log("Name is:", name);
     });
   } catch (error) {
     console.log("Unable to Send the Curl command");
@@ -141,19 +146,18 @@ async function createService(name: any, host: any, tags: any) {
 }
 
 // Creating the Host and trigering the process of genarating routes
-function createRoute(uri: any, host: any) {
-  const options = {
+async function createRoute(uri: any, hostName: any) {
+  var options = {
     method: "POST",
     url: uri,
-    form: { "hosts[]": host, undefined: undefined }
+    form: { "hosts[]": hostName, undefined: undefined }
   };
-
   request(options, async function(error: any, response: any, body: any) {
     if (error) {
       console.log("Unable To Send the Request to create the Service");
     } else {
-      const data = await JSON.parse(body);
-      console.log("Host Created");
+      var data = await JSON.parse(body);
+      console.log("Host Created", body);
       console.log("Host ID   :", data.id);
       console.log("Host Name :", data.hosts["0"]);
       getpaths(swagger.paths);
@@ -163,10 +167,10 @@ function createRoute(uri: any, host: any) {
 
 // loop thrugh swageer file and identifin ng routes and mothords associate to the route
 async function getpaths(data: any) {
-  for (const route in data) {
-    const methrdList = [];
+  for (var route in data) {
+    var methrdList = [];
     // console.log("route is:", route)
-    for (const methord in data[route]) {
+    for (var methord in data[route]) {
       let string = new String(methord);
       methrdList.push(string.toLocaleUpperCase());
     }
@@ -176,8 +180,8 @@ async function getpaths(data: any) {
 }
 
 function createPaths(uri: any, host: any, pathName: any, methordList: any) {
-  const name = pathName.replace(/\W/g, "");
-  const options = {
+  var name = pathName.replace(/\W/g, "");
+  var options = {
     method: "POST",
     url: uri,
     headers: {
@@ -191,12 +195,12 @@ function createPaths(uri: any, host: any, pathName: any, methordList: any) {
     if (error) {
       throw new Error(error);
     }
-    const routeID = await body.id;
+    var routeID = await body.id;
     if (routeID == null) {
       console.log("Route Name Alredy Exits");
       // better roll back the entire transaction if this ocures
     } else {
-      const meth: String = methordList[0];
+      var meth: String = methordList[0];
       console.log("Route Created");
       console.log("Route   ID :", routeID);
       console.log("Service ID :", body.service.id);
@@ -218,7 +222,7 @@ function createPaths(uri: any, host: any, pathName: any, methordList: any) {
 
 async function newPlugin(uri: any, data: any) {
   try {
-    const options = {
+    var options = {
       method: "POST",
       url: uri,
       headers: {
@@ -238,7 +242,7 @@ async function newPlugin(uri: any, data: any) {
       if (error) {
         throw new Error(error);
       }
-      const routeID = await body.id;
+      var routeID = await body.id;
       console.log("Pulgin Created");
       console.log("Plugin Name", body.name);
     });
@@ -250,8 +254,8 @@ async function newPlugin(uri: any, data: any) {
 // need to update the above function to add different flows
 
 async function ceratePluginQuotaAtRouteLevel(data: any, routeID: any) {
-  const rateLimit = parseInt(data) * 1000;
-  const quotas = await new Quotas({
+  var rateLimit = parseInt(data) * 1000;
+  var quotas = await new Quotas({
     route: { id: routeID },
     config: { minute: rateLimit }
   });
@@ -260,7 +264,7 @@ async function ceratePluginQuotaAtRouteLevel(data: any, routeID: any) {
 }
 
 async function addSecurity(data: any, serviceID: any) {
-  for (const security in data) {
+  for (var security in data) {
     if (data[security].type == "oauth2") {
       createPluginOauth(serviceID, data[security].flow);
     } else if (data[security].type == "apiKey") {
@@ -271,20 +275,32 @@ async function addSecurity(data: any, serviceID: any) {
 
 async function createPluginOauth(serviceID: any, flow: any) {
   if (flow == "implicit")
-    var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_implicit_grant": true } })
-  else if (flow == 'password')
-    var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_password_grant": true } })
-  else if (flow == 'application')
-    var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_client_credentials": true } })
+    var body = await new Oauth2({
+      service: { id: seviceID },
+      config: { enable_implicit_grant: true }
+    });
+  else if (flow == "password")
+    var body = await new Oauth2({
+      service: { id: seviceID },
+      config: { enable_password_grant: true }
+    });
+  else if (flow == "application")
+    var body = await new Oauth2({
+      service: { id: seviceID },
+      config: { enable_client_credentials: true }
+    });
   else
-    var body = await new Oauth2({ service: { "id": seviceID }, config: { "enable_authorization_code": true } })
+    var body = await new Oauth2({
+      service: { id: seviceID },
+      config: { enable_authorization_code: true }
+    });
   //console.log("Details are",body)
-  var target = `http://localhost:8001/services/${serviceID}/plugins`
-  await newPlugin(target, body)
+  var target = `http://localhost:8001/services/${serviceID}/plugins`;
+  await newPlugin(target, body);
 }
 
 async function createPluginApiKey(serviceID: any, name: any) {
-  const body = await new ApiKey({
+  var body = await new ApiKey({
     service: { id: seviceID },
     config: { key_names: [name] }
   });
