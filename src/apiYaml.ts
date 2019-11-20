@@ -26,7 +26,6 @@ function addPlugins(data: any, serviceID: any) {
     (data.corsConfiguration.corsConfigurationEnabled) ? createPluginCorss(data.corsConfiguration, serviceID) : console.log("cors is Disabled");
     (data.responseCache == "Enabled") ? createPluginCache(data.cacheTimeout, serviceID) : console.log("Cashe Disabled");
 }
-
 async function createPluginQuotaAtApiLevel(data: any, serviceID: any) {
     const rateLimit = parseInt(data) * 1000;
     console.log("Rate:", rateLimit);
@@ -34,13 +33,11 @@ async function createPluginQuotaAtApiLevel(data: any, serviceID: any) {
     const target = `http://localhost:8001/services/${serviceID}/plugins`;
     await newPlugin(target, quotas);
 }
-
 async function createPluginCorss(data: any, serviceID: any) {
     const corsD = await new CORS({ service: { id: serviceID }, config: { methods: data.accessControlAllowMethods, headers: data.accessControlAllowHeaders, origins: data.accessControlAllowOrigins, credentials: data.accessControlAllowCredentials } });
     const target = `http://localhost:8001/services/${serviceID}/plugins`;
     await newPlugin(target, corsD);
 }
-// addd stratergy
 async function createPluginCache(data: any, serviceID: any) {
     const corsD = await new cache({ service: { id: serviceID }, config: { cache_ttl: data } });
     const target = `http://localhost:8001/services/${serviceID}/plugins`;
@@ -60,7 +57,6 @@ async function newPlugin(uri: any, data: any) {
             },
             body: data, json: true,
         };
-        // console.log(data)
         request(options, async function(error: string | undefined, response: any, body: any) {
             if (error) {
                 throw new Error(error);
