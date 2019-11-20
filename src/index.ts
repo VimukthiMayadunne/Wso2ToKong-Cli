@@ -4,18 +4,14 @@ const request = require("request");
 const chalk = require("chalk");
 const clear = require("clear");
 const figlet = require("figlet");
-const path = require("path");
-const program = require("commander");
 const inquirer = require("inquirer");
-var swagger: any, apiYaml: any, url: any, host: String, ans, seviceID: any;
-let konguri = "http://localhost:8001/services/";
+
 const readYaml = require("read-yaml");
-// const mongoose = require('mongoose');
 const Quotas = require("./models/mapper");
 const Oauth2 = require("./models/oauth");
-
 const ApiKey = require("./models/apiKey");
 const readFile = require("./apiYaml");
+var swagger: any, apiYaml: any, url: any, host: String, ans, seviceID: any , konguri:any; 
 
 main();
 
@@ -76,7 +72,6 @@ async function rel() {
           name = name.replace(/\W/g, "");
           url = konguri + name + "/routes";
           var tags = data.tags != null ? await addtags(data.tags) : [];
-
           createService(name, host, tags);
         } catch (error) {
           console.log(
@@ -138,7 +133,6 @@ async function createService(name: any, host: any, tags: any) {
           await addSecurity(swagger.securityDefinitions, seviceID);
         }
       }
-      console.log("Name is:", name);
     });
   } catch (error) {
     console.log("Unable to Send the Curl command");
@@ -233,7 +227,6 @@ async function newPlugin(uri: any, data: any) {
       body: data,
       json: true
     };
-    // console.log(data)
     request(options, async function(
       error: string | undefined,
       response: any,
@@ -242,7 +235,6 @@ async function newPlugin(uri: any, data: any) {
       if (error) {
         throw new Error(error);
       }
-      var routeID = await body.id;
       console.log("Pulgin Created");
       console.log("Plugin Name", body.name);
     });
@@ -304,7 +296,7 @@ async function createPluginApiKey(serviceID: any, name: any) {
     service: { id: seviceID },
     config: { key_names: [name] }
   });
-  const target = `http://localhost:8001/services/${serviceID}/plugins`;
+  var target = `http://localhost:8001/services/${serviceID}/plugins`;
   await newPlugin(target, body);
 }
 
