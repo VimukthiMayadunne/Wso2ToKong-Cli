@@ -121,7 +121,6 @@ async function createService(name: any, host: any, tags: any) {
         var data = await body;
         if (data.id == null) {
           console.log("Service Name Alredy Exits");
-          console.log("data is :", data);
         } else {
           seviceID = await data.id;
           apiYaml = await readFile.readApiYaml();
