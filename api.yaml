@@ -1,0 +1,76 @@
+id:
+  providerName: admin
+  apiName: Weather
+  version: 1.0.0
+uuid: 37d59894-f24e-4159-89f1-75b896ef9917
+type: HTTP
+context: /data/2.5/1.0.0
+contextTemplate: /data/2.5/{version}
+tags: []
+documents: []
+lastUpdated: Oct 31, 2019 6:09:14 PM
+availableTiers:
+ -
+  name: Bronze
+  displayName: Bronze
+  description: Allows 1000 requests per minute
+  requestsPerMin: 1000
+  requestCount: 1000
+  unitTime: 1
+  timeUnit: min
+  tierPlan: FREE
+  stopOnQuotaReached: true
+availableSubscriptionLevelPolicies: []
+apiLevelPolicy: 50KPerMin
+uriTemplates: []
+apiHeaderChanged: false
+apiResourcePatternsChanged: false
+status: PUBLISHED
+visibility: public
+gatewayLabels: []
+endpointSecured: false
+endpointAuthDigest: false
+transports: http,https
+advertiseOnly: false
+apiOwner: admin
+subscriptionAvailability: all_tenants
+corsConfiguration:
+  corsConfigurationEnabled: true
+  accessControlAllowOrigins:
+   - '*'
+  accessControlAllowCredentials: false
+  accessControlAllowHeaders:
+   - authorization
+   - Access-Control-Allow-Origin
+   - Content-Type
+   - SOAPAction
+  accessControlAllowMethods:
+   - GET
+   - PUT
+   - POST
+   - DELETE
+   - PATCH
+   - OPTIONS
+endpointConfig: '{"endpoint_type":"http","sandbox_endpoints":{"url":"https://api.openweathermap.org/data/2.5"},"production_endpoints":{"url":"https://api.openweathermap.org/data/2.5"}}'
+responseCache: Enabled
+cacheTimeout: 300
+implementation: ENDPOINT
+authorizationHeader: Authorization
+scopes: []
+isDefaultVersion: false
+isPublishedDefaultVersion: false
+environments:
+ - Production and Sandbox
+createdTime: "1572525551308"
+additionalProperties: {}
+monetizationProperties: {}
+isMonetizationEnabled: false
+environmentList:
+ - SANDBOX
+ - PRODUCTION
+apiSecurity: oauth2,oauth_basic_auth_api_key_mandatory
+endpoints: []
+enableSchemaValidation: false
+accessControl: all
+rating: 0.0
+isLatest: true
